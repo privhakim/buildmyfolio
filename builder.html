@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your Portfolio | BuildMyFolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        #previewContainer {
+            border: 1px dashed #ccc;
+            min-height: 500px;
+            background-color: white;
+        }
+
+        .form-section {
+            transition: all 0.3s ease;
+        }
+
+        .form-section:not(.active) {
+            display: none;
+        }
+
+        .theme-option {
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .theme-option.selected {
+            border-color: #3B82F6;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.05);
+        }
+
+        .theme-professional {
+            background: #f8fafc;
+        }
+
+        .theme-modern {
+            background: #f0fdf4;
+        }
+
+        .theme-creative {
+            background: #fef2f2;
+        }
+
+        #photo-preview {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #e2e8f0;
+        }
+
+        @media print {
+            body {
+                padding: 0 !important;
+                background: white !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            #previewContainer {
+                border: none !important;
+                min-height: auto !important;
+                padding: 0 !important;
+            }
+
+            .theme-professional,
+            .theme-modern,
+            .theme-creative {
+                background: white !important;
+            }
+        }
+
+        .skill-item,
+        .project-item {
+            transition: all 0.2s ease;
+        }
+
+        .skill-item:hover,
+        .project-item:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">Build Your Portfolio</h1>
+
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Form Section -->
+            <div class="md:w-1/2 bg-white p-6 rounded-lg shadow-md no-print">
+                <div class="flex mb-6 border-b">
+                    <button class="tab-btn py-2 px-4 font-medium border-b-2 border-blue-500 text-blue-600"
+                        data-tab="basic">Basic Info</button>
+                    <button class="tab-btn py-2 px-4 font-medium text-gray-500" data-tab="skills">Skills</button>
+                    <button class="tab-btn py-2 px-4 font-medium text-gray-500" data-tab="projects">Projects</button>
+                    <button class="tab-btn py-2 px-4 font-medium text-gray-500" data-tab="social">Social Links</button>
+                </div>
+
+                <!-- Basic Info Form -->
+                <div class="form-section active" id="basic-form">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2" for="name">Full Name</label>
+                        <input type="text" id="name"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2" for="title">Professional Title</label>
+                        <input type="text" id="title"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2" for="bio">Bio/About</label>
+                        <textarea id="bio" rows="4"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Profile Photo</label>
+                        <input type="file" id="photo-upload" accept="image/*" class="hidden">
+                        <div class="flex items-center gap-4">
+                            <img id="photo-preview" src="https://via.placeholder.com/150" alt="Profile photo">
+                            <div>
+                                <button type="button" onclick="document.getElementById('photo-upload').click()"
+                                    class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition">
+                                    Choose Photo
+                                </button>
+                                <p class="text-sm text-gray-500 mt-1">Recommended: 150x150 px</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2" for="email">Email</label>
+                        <input type="email" id="email"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2" for="phone">Phone (optional)</label>
+                        <input type="tel" id="phone"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="flex justify-between mt-6">
+                        <button
+                            class="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition">Back</button>
+                        <button
+                            class="next-btn bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+                            data-next="skills">Next: Skills</button>
+                    </div>
+                </div>
+
+                <!-- Skills Form -->
+                <div class="form-section" id="skills-form">
+                    <div id="skills-container">
+                        <div class="skill-item mb-4 flex items-center">
+                            <input type="text" placeholder="Skill name"
+                                class="skill-name px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-grow">
+                            <select
+                                class="skill-level ml-2 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                            <button class="remove-skill ml-2 text-red-500 hover:text-red-700">×</button>
+                        </div>
+                    </div>
+                    <button id="add-skill" class="mt-2 text-blue-500 hover:text-blue-700">+ Add Skill</button>
+                    <div class="flex justify-between mt-6">
+                        <button
+                            class="prev-btn bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition"
+                            data-prev="basic">Back</button>
+                        <button
+                            class="next-btn bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+                            data-next="projects">Next: Projects</button>
+                    </div>
+                </div>
+
+                <!-- Projects Form -->
+                <div class="form-section" id="projects-form">
+                    <div id="projects-container">
+                        <div class="project-item mb-6 p-4 border rounded-lg">
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">Project Title</label>
+                                <input type="text"
+                                    class="project-title w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">Description</label>
+                                <textarea
+                                    class="project-description w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    rows="3"></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">Technologies Used</label>
+                                <input type="text"
+                                    class="project-tech w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Comma separated">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">Project URL (optional)</label>
+                                <input type="url"
+                                    class="project-url w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <button class="remove-project text-red-500 hover:text-red-700">Remove Project</button>
+                        </div>
+                    </div>
+                    <button id="add-project" class="mt-2 text-blue-500 hover:text-blue-700">+ Add Project</button>
+                    <div class="flex justify-between mt-6">
+                        <button
+                            class="prev-btn bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition"
+                            data-prev="skills">Back</button>
+                        <button
+                            class="next-btn bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+                            data-next="social">Next: Social Links</button>
+                    </div>
+                </div>
+
+                <!-- Theme Selector -->
+                <div class="mb-6 bg-white p-4 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold mb-4">Choose a Theme</h2>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="theme-option professional theme-professional p-4 rounded-lg cursor-pointer text-center"
+                            data-theme="professional">
+                            <div class="h-4 w-4 bg-gray-700 rounded-full mx-auto mb-2"></div>
+                            <div class="h-4 w-4 bg-blue-600 rounded-full mx-auto mb-2"></div>
+                            <p class="font-medium">Professional</p>
+                        </div>
+                        <div class="theme-option modern theme-modern p-4 rounded-lg cursor-pointer text-center"
+                            data-theme="modern">
+                            <div class="h-4 w-4 bg-green-600 rounded-full mx-auto mb-2"></div>
+                            <div class="h-4 w-4 bg-teal-400 rounded-full mx-auto mb-2"></div>
+                            <p class="font-medium">Modern</p>
+                        </div>
+                        <div class="theme-option creative theme-creative p-4 rounded-lg cursor-pointer text-center"
+                            data-theme="creative">
+                            <div class="h-4 w-4 bg-red-500 rounded-full mx-auto mb-2"></div>
+                            <div class="h-4 w-4 bg-yellow-400 rounded-full mx-auto mb-2"></div>
+                            <p class="font-medium">Creative</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Links Form -->
+                <div class="form-section" id="social-form">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2" for="linkedin">LinkedIn</label>
+                        <input type="url" id="linkedin" placeholder="https://linkedin.com/in/yourname"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2" for="github">GitHub</label>
+                        <input type="url" id="github" placeholder="https://github.com/yourname"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2" for="twitter">Twitter/X</label>
+                        <input type="url" id="twitter" placeholder="https://twitter.com/yourhandle"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2" for="website">Personal Website</label>
+                        <input type="url" id="website" placeholder="https://yourwebsite.com"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="flex justify-between mt-6">
+                        <button
+                            class="prev-btn bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition"
+                            data-prev="projects">Back</button>
+                        <button id="generate-preview"
+                            class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition">Generate
+                            Preview</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="md:w-1/2">
+                <div class="bg-white p-6 rounded-lg shadow-md mb-4 no-print">
+                    <h2 class="text-xl font-bold mb-4">Live Preview</h2>
+                    <div id="previewContainer" class="p-4">
+                        <p class="text-gray-500 text-center py-20">Your portfolio preview will appear here as you fill
+                            out the form.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md no-print">
+                    <h2 class="text-xl font-bold mb-4">Export Options</h2>
+                    <div class="flex flex-wrap gap-4">
+                        <button id="export-pdf"
+                            class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                            </svg>
+                            Download PDF
+                        </button>
+                        <button id="export-html"
+                            class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Download HTML
+                        </button>
+                        <button id="copy-code"
+                            class="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                            </svg>
+                            Copy Code
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Photo upload preview
+        document.getElementById('photo-upload').addEventListener('change', function (e) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                document.getElementById('photo-preview').src = event.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        });
+
+        // Tab navigation
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // Update active tab
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('border-b-2', 'border-blue-500', 'text-blue-600');
+                    b.classList.add('text-gray-500');
+                });
+                this.classList.add('border-b-2', 'border-blue-500', 'text-blue-600');
+                this.classList.remove('text-gray-500');
+
+                // Show corresponding form section
+                const tab = this.dataset.tab;
+                document.querySelectorAll('.form-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(`${tab}-form`).classList.add('active');
+            });
+        });
+
+        // Next/previous buttons
+        document.querySelectorAll('.next-btn, .prev-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const targetTab = this.dataset.next || this.dataset.prev;
+                document.querySelector(`.tab-btn[data-tab="${targetTab}"]`).click();
+            });
+        });
+
+        // Theme selection
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', function () {
+                document.querySelectorAll('.theme-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                // You would add logic here to apply the selected theme to the preview
+            });
+        });
+    </script>
+
+    <script src="scripts/builder.js"></script>
+    <script src="scripts/export.js"></script>
+</body>
+
+</html>
